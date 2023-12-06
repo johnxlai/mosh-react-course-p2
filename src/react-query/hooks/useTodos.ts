@@ -11,7 +11,7 @@ interface Todo {
 const useTodos = () => {
   const fetchTodos = () =>
     axios
-      .get<Todo[]>('https://sjsonplaceholder.typicode.com/todos')
+      .get<Todo[]>('https://jsonplaceholder.typicode.com/todos')
       .then((res) => res.data);
 
   return useQuery<Todo[], Error>({
