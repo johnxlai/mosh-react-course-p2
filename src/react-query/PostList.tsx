@@ -1,11 +1,11 @@
-import { useState } from 'react';
+import React, { useState } from 'react';
 import usePostList from './hooks/usePostList';
 
 const PostList = () => {
   const pageSize = 10;
-  const [page, setPage] = useState(1);
 
-  const { data: posts, error, isLoading } = usePostList({ page, pageSize });
+  const { data, error, isLoading, fetchNextPage, isFetchingNextPage } =
+    usePostList({ pageSize });
 
   if (isLoading) return <p>Loading...</p>;
   if (error) return <p>{error.message}</p>;
@@ -13,22 +13,22 @@ const PostList = () => {
   return (
     <>
       <ul className="list-group">
-        {posts?.map((post) => (
-          <li key={post.id} className="list-group-item">
-            {post.title}
-          </li>
+        {data.pages.map((page, index) => (
+          <React.Fragment key={index}>
+            {page.map((post) => (
+              <li key={post.id} className="list-group-item">
+                {post.title}
+              </li>
+            ))}
+          </React.Fragment>
         ))}
       </ul>
-      <button
-        disabled={page === 1}
-        className="btn btn-primary my-3"
-        onClick={() => setPage(page - 1)}>
-        Previous
-      </button>
+
       <button
         className="btn btn-primary my-3 ms-1"
-        onClick={() => setPage(page + 1)}>
-        Next
+        disabled={isFetchingNextPage}
+        onClick={() => fetchNextPage()}>
+        {isFetchingNextPage ? 'Loading...' : 'Load More'}
       </button>
     </>
   );
