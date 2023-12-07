@@ -9,7 +9,7 @@ const TodoForm = () => {
   const addTodo = useMutation<Todo, Error, Todo>({
     mutationFn: (todo: Todo) =>
       axios
-        .post<Todo>('https://jsonplaceholder.typicode.com/posssts', todo)
+        .post<Todo>('https://jsonplaceholder.typicode.com/posts', todo)
         .then((res) => res.data),
     onSuccess: (savedTodo, newTodo) => {
       //Invalidating the cache
@@ -23,7 +23,7 @@ const TodoForm = () => {
         ...(todos || []),
       ]);
 
-      console.log(savedTodo);
+      if (ref.current) ref.current.value = '';
     },
   });
 
@@ -52,7 +52,9 @@ const TodoForm = () => {
           <input ref={ref} type="text" className="form-control" />
         </div>
         <div className="col">
-          <button className="btn btn-primary">Add</button>
+          <button className="btn btn-primary" disabled={addTodo.isLoading}>
+            {addTodo.isLoading ? 'Adding...' : 'Add'}
+          </button>
         </div>
       </form>
     </>
